@@ -1,0 +1,46 @@
+{
+  "evaluation_type": "operational_diagnostic_not_relevance_evaluation",
+  "dataset": "MovieLens 100K",
+  "method": "smoothed_popularity_fallback",
+  "k": 10,
+  "users_with_history": 943,
+  "catalog_size": 1682,
+  "catalog_coverage_at_k": 0.020808561236623068,
+  "unique_recommended_movies": 35,
+  "latency_ms": {
+    "p50_per_user": 0.40787458419799805,
+    "p95_per_user": 0.4346659407019615,
+    "max_per_user": 1.171833835542202,
+    "total_measured_scoring_time": 380.96884824335575
+  },
+  "new_user_cold_start": {
+    "history_size": 0,
+    "fallback": "global popularity",
+    "recommendation_count": 10,
+    "top_k_movie_ids": [
+      408,
+      318,
+      169,
+      483,
+      64,
+      114,
+      1189,
+      1293,
+      1449,
+      603
+    ],
+    "accuracy_measured": false,
+    "accuracy_reason": "For a user without history there are no user-specific relevance labels in this diagnostic."
+  },
+  "item_cold_start": {
+    "unrated_catalog_items": 0,
+    "unrated_items_with_genre_metadata": 0,
+    "accuracy_measured": false
+  },
+  "limitations": [
+    "Operational diagnostic only; not a ranking-quality evaluation.",
+    "Does not replace Precision@K, Recall@K or NDCG@K.",
+    "Popularity scores use all available ratings in u.data.",
+    "Do not compare this latency directly with a production service."
+  ]
+}

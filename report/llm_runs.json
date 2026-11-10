@@ -1,168 +1,290 @@
 [
   {
-    "model": "tinyllama:1.1b",
+    "model": "gemma2:2b",
     "attempt": 1,
     "ok": true,
-    "content": "{\"genres\": [\"Action\", \"Adventure\", \"Drama\", \"Romance\"], \"exclude_genres\": [\"Horror\", \"Thriller\"], \"need_clarification\": false}",
-    "seconds": 84.52,
-    "eval_count": 46,
-    "prompt_eval_count": 105,
-    "total_duration_s": 84.52,
+    "content": "{\n  \"genres\": [\"фантастика\", \"комедия\", \"драма\", \"приключения\", \"романтика\"],\n  \"exclude_genres\": [\"ужасы\", \"триллер\", \"боевик\", \"детектив\"],\n  \"need_clarification\": true\n}",
+    "seconds": 14.38,
+    "eval_count": 66,
+    "prompt_eval_count": 242,
+    "total_duration_s": 14.38,
     "json_valid": true,
+    "schema_ok": true,
     "genres": [
-      "боевик",
-      "приключения",
+      "фантастика",
+      "комедия",
       "драма",
+      "приключения",
       "романтика"
     ],
     "exclude_genres": [
       "ужасы",
-      "триллер"
-    ],
-    "need_clarification": false,
-    "genre_ok": false,
-    "exclusion_ok": true,
-    "unknown_genres": [],
-    "extra_fields": [],
-    "invented_titles": true,
-    "tokens_per_second": 0.54
-  },
-  {
-    "model": "tinyllama:1.1b",
-    "attempt": 2,
-    "ok": true,
-    "content": "{\"genres\": [\"Action\", \"Adventure\", \"Drama\", \"Romance\"], \"exclude_genres\": [\"Horror\", \"Thriller\"], \"need_clarification\": false}",
-    "seconds": 4.32,
-    "eval_count": 46,
-    "prompt_eval_count": 105,
-    "total_duration_s": 4.32,
-    "json_valid": true,
-    "genres": [
+      "триллер",
       "боевик",
-      "приключения",
-      "драма",
-      "романтика"
+      "детектив"
     ],
-    "exclude_genres": [
-      "ужасы",
-      "триллер"
-    ],
-    "need_clarification": false,
-    "genre_ok": false,
-    "exclusion_ok": true,
-    "unknown_genres": [],
-    "extra_fields": [],
-    "invented_titles": true,
-    "tokens_per_second": 10.65
-  },
-  {
-    "model": "smollm2:360m",
-    "attempt": 1,
-    "ok": true,
-    "content": "{\n  \"genres\": [\"Action\", \"Comedy\", \"Drama\", \"Thriller\"],\n  \"exclude_genres\": [\"Action\", \"Comedy\", \"Thriller\"],\n  \"need_clarification\": false\n}",
-    "seconds": 43.04,
-    "eval_count": 53,
-    "prompt_eval_count": 141,
-    "total_duration_s": 43.03,
-    "json_valid": true,
-    "genres": [
-      "боевик",
-      "комедия",
-      "драма",
-      "триллер"
-    ],
-    "exclude_genres": [
-      "боевик",
-      "комедия",
-      "триллер"
-    ],
-    "need_clarification": false,
+    "need_clarification": true,
     "genre_ok": false,
     "exclusion_ok": false,
+    "clarification_ok": false,
     "unknown_genres": [],
     "extra_fields": [],
-    "invented_titles": true,
-    "tokens_per_second": 1.23
-  },
-  {
-    "model": "smollm2:360m",
-    "attempt": 2,
-    "ok": true,
-    "content": "{\n  \"genres\": [\"Action\", \"Comedy\", \"Drama\", \"Thriller\"],\n  \"exclude_genres\": [\"Action\", \"Comedy\", \"Thriller\"],\n  \"need_clarification\": false\n}",
-    "seconds": 3.9,
-    "eval_count": 53,
-    "prompt_eval_count": 141,
-    "total_duration_s": 3.89,
-    "json_valid": true,
-    "genres": [
-      "боевик",
-      "комедия",
-      "драма",
-      "триллер"
-    ],
-    "exclude_genres": [
-      "боевик",
-      "комедия",
-      "триллер"
-    ],
-    "need_clarification": false,
-    "genre_ok": false,
-    "exclusion_ok": false,
-    "unknown_genres": [],
-    "extra_fields": [],
-    "invented_titles": true,
-    "tokens_per_second": 13.62
-  },
-  {
-    "model": "llama3.2:1b",
-    "attempt": 1,
-    "ok": false,
-    "error": "HTTPError: HTTP Error 500: Internal Server Error"
-  },
-  {
-    "model": "llama3.2:1b",
-    "attempt": 2,
-    "ok": false,
-    "error": "HTTPError: HTTP Error 500: Internal Server Error"
-  },
-  {
-    "model": "qwen2.5:0.5b",
-    "attempt": 1,
-    "ok": true,
-    "content": "{\n  \"genres\": [],\n  \"exclude_genres\": [],\n  \"need_clarification\": \"нет\"\n}",
-    "seconds": 4.01,
-    "eval_count": 25,
-    "prompt_eval_count": 90,
-    "total_duration_s": 4.01,
-    "json_valid": true,
-    "genres": [],
-    "exclude_genres": [],
-    "need_clarification": "нет",
-    "genre_ok": false,
-    "exclusion_ok": false,
-    "unknown_genres": [],
-    "extra_fields": [],
+    "missing_fields": [],
     "invented_titles": false,
-    "tokens_per_second": 6.23
+    "passed": false,
+    "tokens_per_second": 4.59
   },
   {
-    "model": "qwen2.5:0.5b",
+    "model": "gemma2:2b",
     "attempt": 2,
     "ok": true,
-    "content": "{\n  \"genres\": [],\n  \"exclude_genres\": [],\n  \"need_clarification\": \"нет\"\n}",
-    "seconds": 1.38,
-    "eval_count": 25,
-    "prompt_eval_count": 90,
+    "content": "{\n  \"genres\": [\"фантастика\", \"комедия\", \"драма\", \"приключения\", \"романтика\"],\n  \"exclude_genres\": [\"ужасы\", \"триллер\", \"боевик\", \"детектив\"],\n  \"need_clarification\": true\n}",
+    "seconds": 1.39,
+    "eval_count": 66,
+    "prompt_eval_count": 242,
     "total_duration_s": 1.38,
     "json_valid": true,
-    "genres": [],
-    "exclude_genres": [],
-    "need_clarification": "нет",
+    "schema_ok": true,
+    "genres": [
+      "фантастика",
+      "комедия",
+      "драма",
+      "приключения",
+      "романтика"
+    ],
+    "exclude_genres": [
+      "ужасы",
+      "триллер",
+      "боевик",
+      "детектив"
+    ],
+    "need_clarification": true,
     "genre_ok": false,
     "exclusion_ok": false,
+    "clarification_ok": false,
     "unknown_genres": [],
     "extra_fields": [],
+    "missing_fields": [],
     "invented_titles": false,
-    "tokens_per_second": 18.12
+    "passed": false,
+    "tokens_per_second": 47.83
+  },
+  {
+    "model": "gemma2:2b",
+    "attempt": 3,
+    "ok": true,
+    "content": "{\n  \"genres\": [\"фантастика\", \"комедия\", \"драма\", \"приключения\", \"романтика\"],\n  \"exclude_genres\": [\"ужасы\", \"триллер\", \"боевик\", \"детектив\"],\n  \"need_clarification\": true\n}",
+    "seconds": 1.38,
+    "eval_count": 66,
+    "prompt_eval_count": 242,
+    "total_duration_s": 1.38,
+    "json_valid": true,
+    "schema_ok": true,
+    "genres": [
+      "фантастика",
+      "комедия",
+      "драма",
+      "приключения",
+      "романтика"
+    ],
+    "exclude_genres": [
+      "ужасы",
+      "триллер",
+      "боевик",
+      "детектив"
+    ],
+    "need_clarification": true,
+    "genre_ok": false,
+    "exclusion_ok": false,
+    "clarification_ok": false,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "missing_fields": [],
+    "invented_titles": false,
+    "passed": false,
+    "tokens_per_second": 47.83
+  },
+  {
+    "model": "llama3.2:3b",
+    "attempt": 1,
+    "ok": true,
+    "content": "{\"genres\": [\"фантастика\", \"комедия\", \"приключения\", \"романтика\", \"детектив\", \"боевик\"], \"exclude_genres\": [\"ужасы\"], \"need_clarification\": false}",
+    "seconds": 3.82,
+    "eval_count": 51,
+    "prompt_eval_count": 280,
+    "total_duration_s": 3.81,
+    "json_valid": true,
+    "schema_ok": true,
+    "genres": [
+      "фантастика",
+      "комедия",
+      "приключения",
+      "романтика",
+      "детектив",
+      "боевик"
+    ],
+    "exclude_genres": [
+      "ужасы"
+    ],
+    "need_clarification": false,
+    "genre_ok": false,
+    "exclusion_ok": true,
+    "clarification_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "missing_fields": [],
+    "invented_titles": false,
+    "passed": false,
+    "tokens_per_second": 13.39
+  },
+  {
+    "model": "llama3.2:3b",
+    "attempt": 2,
+    "ok": true,
+    "content": "{\"genres\": [\"фантастика\", \"комедия\", \"приключения\", \"романтика\", \"детектив\", \"боевик\"], \"exclude_genres\": [\"ужасы\"], \"need_clarification\": false}",
+    "seconds": 1.27,
+    "eval_count": 51,
+    "prompt_eval_count": 280,
+    "total_duration_s": 1.27,
+    "json_valid": true,
+    "schema_ok": true,
+    "genres": [
+      "фантастика",
+      "комедия",
+      "приключения",
+      "романтика",
+      "детектив",
+      "боевик"
+    ],
+    "exclude_genres": [
+      "ужасы"
+    ],
+    "need_clarification": false,
+    "genre_ok": false,
+    "exclusion_ok": true,
+    "clarification_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "missing_fields": [],
+    "invented_titles": false,
+    "passed": false,
+    "tokens_per_second": 40.16
+  },
+  {
+    "model": "llama3.2:3b",
+    "attempt": 3,
+    "ok": true,
+    "content": "{\"genres\": [\"фантастика\", \"комедия\", \"приключения\", \"романтика\", \"детектив\", \"боевик\"], \"exclude_genres\": [\"ужасы\"], \"need_clarification\": false}",
+    "seconds": 1.44,
+    "eval_count": 51,
+    "prompt_eval_count": 280,
+    "total_duration_s": 1.44,
+    "json_valid": true,
+    "schema_ok": true,
+    "genres": [
+      "фантастика",
+      "комедия",
+      "приключения",
+      "романтика",
+      "детектив",
+      "боевик"
+    ],
+    "exclude_genres": [
+      "ужасы"
+    ],
+    "need_clarification": false,
+    "genre_ok": false,
+    "exclusion_ok": true,
+    "clarification_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "missing_fields": [],
+    "invented_titles": false,
+    "passed": false,
+    "tokens_per_second": 35.42
+  },
+  {
+    "model": "qwen2.5:3b",
+    "attempt": 1,
+    "ok": true,
+    "content": "{\n  \"genres\": [\"фантастика\"],\n  \"exclude_genres\": [\"ужасы\"],\n  \"need_clarification\": false\n}",
+    "seconds": 2.31,
+    "eval_count": 33,
+    "prompt_eval_count": 294,
+    "total_duration_s": 2.3,
+    "json_valid": true,
+    "schema_ok": true,
+    "genres": [
+      "фантастика"
+    ],
+    "exclude_genres": [
+      "ужасы"
+    ],
+    "need_clarification": false,
+    "genre_ok": true,
+    "exclusion_ok": true,
+    "clarification_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "missing_fields": [],
+    "invented_titles": false,
+    "passed": true,
+    "tokens_per_second": 14.35
+  },
+  {
+    "model": "qwen2.5:3b",
+    "attempt": 2,
+    "ok": true,
+    "content": "{\n  \"genres\": [\"фантастика\"],\n  \"exclude_genres\": [\"ужасы\"],\n  \"need_clarification\": false\n}",
+    "seconds": 0.8,
+    "eval_count": 33,
+    "prompt_eval_count": 294,
+    "total_duration_s": 0.79,
+    "json_valid": true,
+    "schema_ok": true,
+    "genres": [
+      "фантастика"
+    ],
+    "exclude_genres": [
+      "ужасы"
+    ],
+    "need_clarification": false,
+    "genre_ok": true,
+    "exclusion_ok": true,
+    "clarification_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "missing_fields": [],
+    "invented_titles": false,
+    "passed": true,
+    "tokens_per_second": 41.77
+  },
+  {
+    "model": "qwen2.5:3b",
+    "attempt": 3,
+    "ok": true,
+    "content": "{\n  \"genres\": [\"фантастика\"],\n  \"exclude_genres\": [\"ужасы\"],\n  \"need_clarification\": false\n}",
+    "seconds": 0.8,
+    "eval_count": 33,
+    "prompt_eval_count": 294,
+    "total_duration_s": 0.8,
+    "json_valid": true,
+    "schema_ok": true,
+    "genres": [
+      "фантастика"
+    ],
+    "exclude_genres": [
+      "ужасы"
+    ],
+    "need_clarification": false,
+    "genre_ok": true,
+    "exclusion_ok": true,
+    "clarification_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "missing_fields": [],
+    "invented_titles": false,
+    "passed": true,
+    "tokens_per_second": 41.25
   }
 ]

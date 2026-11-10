@@ -3,9 +3,13 @@ from __future__ import annotations
 import json
 import math
 import sqlite3
+import threading
 import time
+import uuid
 from pathlib import Path
 from typing import Any
+
+from observability import trace_recommendation
 
 
 ROOT = Path(__file__).resolve().parent
@@ -16,6 +20,9 @@ LOG_DIR.mkdir(exist_ok=True)
 
 DB_PATH = DATA_DIR / "profiles.sqlite"
 TRACE_PATH = LOG_DIR / "traces.jsonl"
+
+ALLOWED_ALGORITHMS = {"popular", "content", "item_cf", "hybrid"}
+SESSION_TTL_SECONDS = 1800
 
 
 MOVIES = [
@@ -45,6 +52,119 @@ RATINGS = {
 MOVIE_BY_ID = {movie["id"]: movie for movie in MOVIES}
 
 
+class SessionMemory:
+    def __init__(self, ttl_seconds: int = SESSION_TTL_SECONDS) -> None:
+        if ttl_seconds <= 0:
+            raise ValueError("ttl_seconds должен быть положительным")
+
+        self.ttl_seconds = ttl_seconds
+        self._entries: dict[
+            str,
+            tuple[float, dict[str, list[str]]],
+        ] = {}
+        self._lock = threading.RLock()
+
+    @staticmethod
+    def _clean_list(value: Any) -> list[str]:
+        if not isinstance(value, list):
+            return []
+
+        result: list[str] = []
+        for item in value:
+            if isinstance(item, str):
+                item = item.strip()
+                if item and item not in result:
+                    result.append(item)
+        return result
+
+    def _get_unlocked(self, session_id: str) -> dict[str, list[str]]:
+        entry = self._entries.get(session_id)
+        if entry is None:
+            return {"genres": [], "exclude_genres": []}
+
+        expires_at, preferences = entry
+        if expires_at <= time.monotonic():
+            self._entries.pop(session_id, None)
+            return {"genres": [], "exclude_genres": []}
+
+        return {
+            "genres": list(preferences["genres"]),
+            "exclude_genres": list(preferences["exclude_genres"]),
+        }
+
+    def resolve(
+        self,
+        session_id: str | None,
+        parsed: dict[str, Any],
+    ) -> dict[str, Any]:
+        if not isinstance(parsed, dict):
+            raise ValueError("parsed должен быть словарём")
+
+
+
+        if session_id is None:
+            return dict(parsed)
+
+        if not isinstance(session_id, str) or not session_id.strip():
+            raise ValueError("session_id должен быть непустой строкой")
+
+        session_id = session_id.strip()
+        current_genres = self._clean_list(parsed.get("genres"))
+        current_excluded = self._clean_list(parsed.get("exclude_genres"))
+
+        with self._lock:
+            previous = self._get_unlocked(session_id)
+
+
+
+
+
+            genres = current_genres or previous["genres"]
+
+
+
+            excluded = list(previous["exclude_genres"])
+            for genre in current_excluded:
+                if genre not in excluded:
+                    excluded.append(genre)
+
+            genres = [genre for genre in genres if genre not in excluded]
+
+            resolved = dict(parsed)
+            resolved["genres"] = genres
+            resolved["exclude_genres"] = excluded
+            resolved["need_clarification"] = (
+                bool(parsed.get("need_clarification")) and not bool(genres)
+            )
+
+            self._entries[session_id] = (
+                time.monotonic() + self.ttl_seconds,
+                {
+                    "genres": list(genres),
+                    "exclude_genres": list(excluded),
+                },
+            )
+
+            return resolved
+
+    def get(self, session_id: str) -> dict[str, list[str]]:
+        if not isinstance(session_id, str) or not session_id.strip():
+            raise ValueError("session_id должен быть непустой строкой")
+
+        with self._lock:
+            return self._get_unlocked(session_id.strip())
+
+    def clear(self, session_id: str) -> bool:
+        if not isinstance(session_id, str) or not session_id.strip():
+            raise ValueError("session_id должен быть непустой строкой")
+
+        with self._lock:
+            return self._entries.pop(session_id.strip(), None) is not None
+
+
+SESSION_MEMORY = SessionMemory()
+
+
 def log_event(event: dict[str, Any]) -> None:
     record = {"time": time.time(), **event}
     with TRACE_PATH.open("a", encoding="utf-8") as file:
@@ -59,7 +179,7 @@ def popularity_scores() -> dict[int, float]:
     ]
     average = sum(all_ratings) / len(all_ratings) if all_ratings else 0.0
 
-    scores = {}
+    scores: dict[int, float] = {}
     for movie in MOVIES:
         values = [
             user_ratings[movie["id"]]
@@ -91,7 +211,7 @@ def recommend_content(
     limit: int = 8,
 ) -> list[tuple[int, float]]:
     wanted = {genre.casefold() for genre in wanted_genres}
-    results = []
+    results: list[tuple[int, float]] = []
 
     for movie in MOVIES:
         movie_genres = {genre.casefold() for genre in movie["genres"]}
@@ -134,7 +254,7 @@ def recommend_item_cf(
         return recommend_popular(limit)
 
     user_ratings = RATINGS[user_id]
-    results = []
+    results: list[tuple[int, float]] = []
 
     for candidate in MOVIES:
         candidate_id = candidate["id"]
@@ -175,17 +295,12 @@ def recommend_hybrid(
 
     already_seen = set(RATINGS[user_id])
 
-    content = dict(
-        recommend_content(wanted_genres, len(MOVIES))
-    )
-    collaborative = dict(
-        recommend_item_cf(user_id, len(MOVIES))
-    )
+    content = dict(recommend_content(wanted_genres, len(MOVIES)))
+    collaborative = dict(recommend_item_cf(user_id, len(MOVIES)))
     popular = popularity_scores()
 
     def scale(scores: dict[int, float]) -> dict[int, float]:
         maximum = max(scores.values(), default=0.0)
-
         if maximum <= 0:
             return {movie_id: 0.0 for movie_id in scores}
 
@@ -198,11 +313,9 @@ def recommend_hybrid(
     collaborative = scale(collaborative)
     popular = scale(popular)
 
-    results = []
-
+    results: list[tuple[int, float]] = []
     for movie in MOVIES:
         movie_id = movie["id"]
-
         if movie_id in already_seen:
             continue
 
@@ -211,7 +324,6 @@ def recommend_hybrid(
             + 0.30 * collaborative.get(movie_id, 0.0)
             + 0.10 * popular.get(movie_id, 0.0)
         )
-
         results.append((movie_id, score))
 
     return sorted(
@@ -219,6 +331,7 @@ def recommend_hybrid(
         key=lambda pair: pair[1],
         reverse=True,
     )[:limit]
+
 
 def parse_request_locally(text: str) -> dict[str, Any]:
     text = text.casefold().replace("ё", "е")
@@ -235,8 +348,8 @@ def parse_request_locally(text: str) -> dict[str, Any]:
         "боевик": ["боевик", "боевики"],
     }
 
-    genres = []
-    excluded = []
+    genres: list[str] = []
+    excluded: list[str] = []
 
     for genre, forms in word_forms.items():
         if any(form in text for form in forms):
@@ -258,6 +371,16 @@ def parse_request_locally(text: str) -> dict[str, Any]:
 
 
 def save_profile(user_id: str, genres: list[str]) -> None:
+    if not isinstance(user_id, str) or not user_id.strip():
+        raise ValueError("Нужен непустой user_id")
+    if not isinstance(genres, list):
+        raise ValueError("genres должен быть списком")
+    if not all(isinstance(genre, str) for genre in genres):
+        raise ValueError("Каждый жанр должен быть строкой")
+
+    user_id = user_id.strip()
+    clean_genres = list(dict.fromkeys(genre.strip() for genre in genres))
+
     with sqlite3.connect(DB_PATH) as db:
         db.execute(
             """
@@ -276,11 +399,14 @@ def save_profile(user_id: str, genres: list[str]) -> None:
             DO UPDATE SET genres=excluded.genres,
                           updated_at=CURRENT_TIMESTAMP
             """,
-            (user_id, json.dumps(genres, ensure_ascii=False)),
+            (user_id, json.dumps(clean_genres, ensure_ascii=False)),
         )
 
 
 def load_profile(user_id: str) -> list[str] | None:
+    if not isinstance(user_id, str) or not user_id.strip():
+        raise ValueError("Нужен непустой user_id")
+
     with sqlite3.connect(DB_PATH) as db:
         db.execute(
             """
@@ -293,10 +419,31 @@ def load_profile(user_id: str) -> list[str] | None:
         )
         row = db.execute(
             "SELECT genres FROM profiles WHERE user_id = ?",
-            (user_id,),
+            (user_id.strip(),),
         ).fetchone()
 
     return json.loads(row[0]) if row else None
+
+
+def delete_profile(user_id: str) -> bool:
+    if not isinstance(user_id, str) or not user_id.strip():
+        raise ValueError("Нужен непустой user_id")
+
+    with sqlite3.connect(DB_PATH) as db:
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS profiles (
+                user_id TEXT PRIMARY KEY,
+                genres TEXT NOT NULL,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+        cursor = db.execute(
+            "DELETE FROM profiles WHERE user_id = ?",
+            (user_id.strip(),),
+        )
+        return cursor.rowcount > 0
 
 
 def validate_recommendations(
@@ -304,20 +451,16 @@ def validate_recommendations(
     excluded_genres: list[str],
     required_genres: list[str] | None = None,
 ) -> list[tuple[int, float]]:
-    forbidden = {
-        genre.casefold()
-        for genre in excluded_genres
-    }
+    forbidden = {genre.casefold() for genre in excluded_genres}
     required = {
         genre.casefold()
         for genre in (required_genres or [])
     }
 
-    valid = []
+    valid: list[tuple[int, float]] = []
 
     for movie_id, score in rows:
         movie = MOVIE_BY_ID.get(movie_id)
-
         if movie is None:
             continue
 
@@ -336,6 +479,7 @@ def validate_recommendations(
 
     return valid
 
+
 def explain_movie(
     movie: dict[str, Any],
     wanted_genres: list[str],
@@ -347,90 +491,144 @@ def explain_movie(
     return "Подобран алгоритмом по каталогу и оценкам."
 
 
+@trace_recommendation
 def recommend(
     text: str,
     user_id: str = "new",
     algorithm: str = "hybrid",
+    session_id: str | None = None,
 ) -> dict[str, Any]:
+    if not isinstance(text, str):
+        raise ValueError("text должен быть строкой")
+    if not isinstance(user_id, str) or not user_id.strip():
+        raise ValueError("Нужен непустой user_id")
+    if algorithm not in ALLOWED_ALGORITHMS:
+        raise ValueError(f"Неизвестный алгоритм: {algorithm}")
+
+    request_id = str(uuid.uuid4())
     started = time.perf_counter()
-    preferences = parse_request_locally(text)
 
-    log_event({
-        "step": "parse",
-        "preferences": preferences,
-    })
+    try:
+        from llm_router import parse_with_fallback
 
-    genres = preferences["genres"] or load_profile(user_id) or []
+        parsed = parse_with_fallback(text)
+        preferences = SESSION_MEMORY.resolve(session_id, parsed)
 
-    if preferences["need_clarification"] and not genres:
-        result = {
-            "status": "clarification",
-            "message": "Уточните, пожалуйста, жанр или настроение.",
-        }
-        log_event({"step": "clarification"})
-        return result
-
-    numeric_user_id = None
-    if user_id.isdigit() and int(user_id) in RATINGS:
-        numeric_user_id = int(user_id)
-
-    if algorithm == "popular":
-        candidates = recommend_popular()
-    elif algorithm == "content":
-        candidates = recommend_content(genres)
-    elif algorithm == "item_cf":
-        candidates = recommend_item_cf(numeric_user_id)
-    else:
-        candidates = recommend_hybrid(genres, numeric_user_id)
-
-    checked = validate_recommendations(
-        candidates,
-        preferences["exclude_genres"],
-        genres,
-    )
-
-    if not checked:
-        result = {
-            "status": "no_results",
-            "message": (
-                "В каталоге не нашлось фильмов, подходящих "
-                "под указанные жанры и ограничения."
-            ),
-            "recommendations": [],
-        }
         log_event({
-            "step": "no_results",
-            "genres": genres,
-            "excluded_genres": preferences["exclude_genres"],
+            "request_id": request_id,
+            "step": "parse",
+            "preferences": preferences,
         })
+
+        genres = preferences.get("genres") or load_profile(user_id) or []
+        excluded = preferences.get("exclude_genres") or []
+
+
+
+
+
+        if genres:
+            preferences["need_clarification"] = False
+
+        if preferences.get("need_clarification") and not genres:
+            result = {
+                "status": "clarification",
+                "message": "Уточните, пожалуйста, жанр или настроение.",
+            }
+            log_event({
+                "request_id": request_id,
+                "step": "clarification",
+            })
+            return result
+
+        numeric_user_id: int | None = None
+        if user_id.isdigit() and int(user_id) in RATINGS:
+            numeric_user_id = int(user_id)
+
+        log_event({
+            "request_id": request_id,
+            "step": "recommend",
+            "algorithm": algorithm,
+        })
+
+        if algorithm == "popular":
+            candidates = recommend_popular()
+        elif algorithm == "content":
+            candidates = recommend_content(genres)
+        elif algorithm == "item_cf":
+            candidates = recommend_item_cf(numeric_user_id)
+        else:
+            candidates = recommend_hybrid(genres, numeric_user_id)
+
+        checked = validate_recommendations(
+            candidates,
+            excluded,
+            genres,
+        )
+
+        log_event({
+            "request_id": request_id,
+            "step": "validation",
+            "candidate_count": len(candidates),
+            "valid_count": len(checked),
+        })
+
+        if not checked:
+            result = {
+                "status": "no_results",
+                "message": (
+                    "В каталоге не нашлось фильмов, подходящих "
+                    "под указанные жанры и ограничения."
+                ),
+                "recommendations": [],
+            }
+            log_event({
+                "request_id": request_id,
+                "step": "no_results",
+                "genres": genres,
+                "excluded_genres": excluded,
+            })
+            return result
+
+        items: list[dict[str, Any]] = []
+        for movie_id, score in checked[:5]:
+            movie = MOVIE_BY_ID[movie_id]
+            items.append({
+                "title": movie["title"],
+                "genres": list(movie["genres"]),
+                "score": round(score, 3),
+                "reason": explain_movie(movie, genres),
+            })
+
+        result = {
+            "status": "ok",
+            "algorithm": algorithm,
+            "recommendations": items,
+        }
+
+        log_event({
+            "request_id": request_id,
+            "step": "finish",
+            "duration_ms": round(
+                (time.perf_counter() - started) * 1000,
+                2,
+            ),
+            "recommendation_count": len(items),
+        })
+
         return result
 
-    items = []
-    for movie_id, score in checked[:5]:
-        movie = MOVIE_BY_ID[movie_id]
-        items.append({
-            "title": movie["title"],
-            "genres": movie["genres"],
-            "score": round(score, 3),
-            "reason": explain_movie(movie, genres),
+    except Exception as error:
+        log_event({
+            "request_id": request_id,
+            "step": "error",
+            "error_type": type(error).__name__,
+            "duration_ms": round(
+                (time.perf_counter() - started) * 1000,
+                2,
+            ),
         })
-
-    result = {
-        "status": "ok",
-        "algorithm": algorithm,
-        "recommendations": items,
-    }
-
-    log_event({
-        "step": "finish",
-        "duration_ms": round(
-            (time.perf_counter() - started) * 1000,
-            2,
-        ),
-        "recommendation_count": len(items),
-    })
-
-    return result
+        raise
 
 
 def precision_recall_at_k(
@@ -492,7 +690,7 @@ def run_demo_eval() -> None:
 
     count = len(cases)
     print("Демонстрационная оценка на встроенных примерах.")
-    print("Она не является оценкой на MovieLens или реальном трафике.")
+    print("Это не оценка на MovieLens или реальном трафике.")
     print(f"Средний Precision@5: {totals[0] / count:.3f}")
     print(f"Средний Recall@5:    {totals[1] / count:.3f}")
     print(f"Средний NDCG@5:      {totals[2] / count:.3f}")

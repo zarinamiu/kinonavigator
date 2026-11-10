@@ -28,8 +28,10 @@ ALLOWED_GENRES = {
     "боевик",
 }
 
-# Малые модели уверенно отвечают по-английски, поэтому английские
-# названия жанров приводим к русским, а не отбрасываем как мусор.
+
+
+
+
 GENRE_ALIASES = {
     "fantasy": "фантастика",
     "sci-fi": "фантастика",
@@ -119,7 +121,8 @@ def ask_model(model: str, user_text: str) -> dict:
         if genre and genre not in excluded:
             excluded.append(genre)
 
-    # Запрещённый жанр нельзя одновременно считать предпочтением.
+
+
     genres = [genre for genre in genres if genre not in excluded]
 
     clarification = parsed.get("need_clarification", False)
@@ -154,8 +157,7 @@ def parse_with_fallback(user_text: str) -> dict:
 
         try:
             result = ask_model(model, user_text)
-        except (urllib.error.URLError, TimeoutError, ValueError,
-                KeyError, json.JSONDecodeError) as error:
+        except (OSError, TimeoutError, ValueError, KeyError) as error:
             errors.append(f"{model}: {error}")
             continue
 

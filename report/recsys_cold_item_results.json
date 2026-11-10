@@ -1,0 +1,35 @@
+{
+  "evaluation_type": "synthetic_item_cold_start_holdout",
+  "dataset": "MovieLens 100K",
+  "seed": 42,
+  "cold_item_fraction": 0.2,
+  "k": 10,
+  "positive_threshold": 4,
+  "catalog_items": 1682,
+  "warm_items": 1346,
+  "synthetic_cold_items": 336,
+  "users_with_positive_cold_test": 927,
+  "evaluated_users": 927,
+  "candidate_items_per_user": 336,
+  "content_genre_model": {
+    "precision_at_k": 0.07939590075512407,
+    "recall_at_k": 0.07421570571656308,
+    "ndcg_at_k": 0.0949008174943021
+  },
+  "random_baseline": {
+    "precision_at_k": 0.03387270765911543,
+    "recall_at_k": 0.02847035196143798,
+    "ndcg_at_k": 0.03925634527338602
+  },
+  "catalog_coverage_at_k": {
+    "content_genre_model": 0.5238095238095238,
+    "random_baseline": 1.0
+  },
+  "split_policy": "Global item holdout: all ratings for synthetic-cold items are excluded from user-profile construction and used only as held-out relevance labels.",
+  "limitations": [
+    "Synthetic offline item-cold-start simulation, not production.",
+    "Genre features are used; no textual or external metadata.",
+    "Results depend on seed, threshold, and 20% item holdout.",
+    "Users without at least five warm ratings are excluded."
+  ]
+}

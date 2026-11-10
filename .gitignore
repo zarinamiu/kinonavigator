@@ -11,3 +11,8 @@ data/ml-100k/
 .venv-crewai/
 .venv-phoenix/
 *.log
+# Local Python environments and experiment backups
+.venv*/
+*.before-*
+report/*.previous.json
+report/*.before-prompt-change.json

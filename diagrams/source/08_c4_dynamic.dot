@@ -1,0 +1,222 @@
+digraph KinoNavigatorDynamic {
+    graph [
+        label="КиноНавигатор — динамика запроса",
+        labelloc="t",
+        labeljust="l",
+        rankdir="LR",
+        bgcolor="#F7F8FC",
+        pad="0.35",
+        nodesep="0.42",
+        ranksep="0.72",
+        splines="ortho",
+        compound="true",
+        newrank="true",
+        fontname="Helvetica",
+        fontsize="22",
+        fontcolor="#172033",
+        dpi="240",
+        size="16,10!",
+        ratio="fill"
+    ];
+
+    node [
+        shape="box",
+        style="rounded,filled",
+        color="#C8D2E1",
+        fillcolor="#FFFFFF",
+        fontname="Helvetica",
+        fontsize="12",
+        fontcolor="#172033",
+        penwidth="1.4",
+        margin="0.20,0.14"
+    ];
+
+    edge [
+        color="#52627A",
+        fontname="Helvetica",
+        fontsize="10",
+        fontcolor="#334155",
+        penwidth="1.35",
+        arrowsize="0.75"
+    ];
+
+    user [
+        label="Пользователь",
+        shape="oval",
+        fillcolor="#E9EEFF",
+        color="#8397D8"
+    ];
+
+    subgraph cluster_app {
+        label="КиноНавигатор — Python application";
+        labelloc="t";
+        labeljust="l";
+        color="#AAB8D0";
+        fillcolor="#F0F4FA";
+        style="rounded,filled";
+        penwidth="1.5";
+        fontname="Helvetica";
+        fontsize="15";
+        fontcolor="#26354D";
+        margin="22";
+
+        request [
+            label="1. Запрос пользователя\nтекст + параметры вызова",
+            fillcolor="#FFFFFF"
+        ];
+
+        router [
+            label="2. LLM Router\nparse_with_fallback",
+            fillcolor="#E8F3FF",
+            color="#71A6D5"
+        ];
+
+        local_parser [
+            label="Локальный parser\nfallback при ошибке LLM",
+            fillcolor="#FFF5E6",
+            color="#D9A441"
+        ];
+
+        preferences [
+            label="Нормализованные\nжанры и исключения",
+            fillcolor="#EAF7F0",
+            color="#7DBB91"
+        ];
+
+        session_memory [
+            label="3. Краткосрочная память\nSESSION_MEMORY, TTL",
+            fillcolor="#EAF7F0",
+            color="#7DBB91"
+        ];
+
+        recommender [
+            label="4. Рекомендательный слой\nPopularity · Content · Item-CF · Hybrid",
+            fillcolor="#EEEAFE",
+            color="#9A86D8"
+        ];
+
+        validator [
+            label="5. Валидатор\nпроверка жанров и запретов",
+            fillcolor="#FFF0F0",
+            color="#D98A8A"
+        ];
+
+        response [
+            label="6. Ответ\nтоп рекомендаций и объяснения",
+            fillcolor="#EAF7F0",
+            color="#7DBB91"
+        ];
+
+        jsonl [
+            label="Локальный журнал\nlogs/traces.jsonl",
+            shape="note",
+            fillcolor="#FFFFFF"
+        ];
+
+        request -> router [
+            label="разбор запроса"
+        ];
+
+        router -> preferences [
+            label="успешный разбор"
+        ];
+
+        router -> local_parser [
+            label="ошибка / fallback",
+            style="dashed",
+            color="#C28A2C"
+        ];
+
+        local_parser -> preferences [
+            label="результат fallback",
+            style="dashed",
+            color="#C28A2C"
+        ];
+
+        preferences -> session_memory [
+            label="разрешение контекста сессии"
+        ];
+
+        session_memory -> recommender [
+            label="жанры и исключения"
+        ];
+
+        recommender -> validator [
+            label="кандидаты и scores"
+        ];
+
+        validator -> response [
+            label="прошедшие проверку фильмы"
+        ];
+
+        response -> user [
+            label="показ результата",
+            ltail="cluster_app"
+        ];
+
+        router -> jsonl [
+            label="события",
+            style="dotted",
+            color="#718096",
+            constraint="false"
+        ];
+
+        recommender -> jsonl [
+            label="алгоритм / результат",
+            style="dotted",
+            color="#718096",
+            constraint="false"
+        ];
+
+        validator -> jsonl [
+            label="результат валидации",
+            style="dotted",
+            color="#718096",
+            constraint="false"
+        ];
+    }
+
+    ollama [
+        label="Ollama\nлокальные LLM-модели\nнапример, Qwen 2.5 3B",
+        shape="component",
+        fillcolor="#E8F3FF",
+        color="#71A6D5"
+    ];
+
+    profile_db [
+        label="Долгосрочный профиль\nSQLite: profiles.sqlite",
+        shape="cylinder",
+        fillcolor="#FFF8E8",
+        color="#D9A441"
+    ];
+
+    phoenix [
+        label="Arize Phoenix\nOTLP traces\nпри PHOENIX_TRACING=1",
+        shape="component",
+        fillcolor="#F4ECFF",
+        color="#9A86D8"
+    ];
+
+    router -> ollama [
+        label="вызов модели",
+        lhead="cluster_app"
+    ];
+
+    ollama -> router [
+        label="ответ модели",
+        style="dashed"
+    ];
+
+    profile_db -> recommender [
+        label="профиль, если есть",
+        lhead="cluster_app"
+    ];
+
+    recommender -> phoenix [
+        label="span recommend()\nтолько при включённой трассировке",
+        style="dashed",
+        color="#8067BC"
+    ];
+
+    { rank=same; ollama; profile_db; }
+}

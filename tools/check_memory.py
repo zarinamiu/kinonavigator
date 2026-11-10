@@ -1,139 +1,102 @@
-"""Проверка памяти КиноНавигатора: рабочее состояние, SQLite-профиль, удаление.
+"""Проверяет краткосрочную память сессии и профиль SQLite."""
 
-Смотрит на код как есть, без предположений: что реально попадает в базу,
-что живёт только внутри одного вызова и что происходит при повторном
-сохранении и при удалении.
-"""
+from __future__ import annotations
 
-import json
-import sqlite3
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-import app
+import app  # noqa: E402
 
 
-def dump_table() -> list[tuple]:
-    with sqlite3.connect(app.DB_PATH) as db:
-        db.execute(
-            """
-            CREATE TABLE IF NOT EXISTS profiles (
-                user_id TEXT PRIMARY KEY,
-                genres TEXT NOT NULL,
-                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        return db.execute(
-            "SELECT user_id, genres, updated_at FROM profiles ORDER BY user_id"
-        ).fetchall()
+SESSION_ID = "check-memory-session"
+USER_ID = "check-memory-user"
 
 
 def main() -> None:
-    print("=" * 70)
-    print("1. РАБОЧЕЕ СОСТОЯНИЕ ОДНОГО ВЫЗОВА")
-    print("=" * 70)
+    if not hasattr(app, "SESSION_MEMORY"):
+        raise SystemExit("FAIL: в app.py нет SESSION_MEMORY")
 
-    result = app.recommend("Посоветуй фантастику без ужасов")
-    print("status:", result["status"])
-    print("алгоритм:", result["algorithm"])
-    print("кандидатов в ответе:", len(result["recommendations"]))
-    print(
-        "что возвращается наружу:",
-        sorted(result.keys()),
-    )
-    print()
-    print("Ключи ответа — это и есть всё, что переживает вызов:")
-    print("  жанры и запреты передаются в validate_recommendations,")
-    print("  список кандидатов существует только внутри recommend().")
-    print("  Ни то, ни другое не сохраняется между запусками.")
-    print()
+    app.SESSION_MEMORY.clear(SESSION_ID)
 
-    print("=" * 70)
-    print("2. КРАТКОСРОЧНАЯ ПАМЯТЬ (уточнения в диалоге)")
-    print("=" * 70)
+    answers = [
+        {
+            "genres": ["фантастика"],
+            "exclude_genres": ["ужасы"],
+            "need_clarification": False,
+            "source_model": "memory-check",
+            "fallback_chain": [],
+        },
+        {
+            "genres": [],
+            "exclude_genres": [],
+            "need_clarification": True,
+            "source_model": "memory-check",
+            "fallback_chain": [],
+        },
+    ]
 
-    print("В app.py нет истории диалога: recommend() принимает одну строку.")
-    print("Уточнение реализовано как статус ответа, а не как состояние:")
-    print()
+    try:
+        with patch(
+            "llm_router.parse_with_fallback",
+            side_effect=answers,
+        ):
+            first = app.recommend(
+                "фантастика без ужасов",
+                session_id=SESSION_ID,
+            )
+            second = app.recommend(
+                "ещё что-нибудь",
+                session_id=SESSION_ID,
+            )
 
-    unclear = app.recommend("Посоветуй что-нибудь")
-    print("  запрос без жанра ->", unclear["status"])
-    print("  сообщение:", unclear.get("message"))
-    print()
+        memory = app.SESSION_MEMORY.get(SESSION_ID)
 
-    # Проверка: помнит ли система предыдущий запрос.
-    print("Проверка, что контекст не переносится между вызовами:")
-    first = app.recommend("Посоветуй фантастику без ужасов")
-    second = app.recommend("Посоветуй что-нибудь")
-    print("  вызов 1 статус:", first["status"])
-    print("  вызов 2 статус:", second["status"])
-    print(
-        "  второй запрос не знает про фантастику из первого:",
-        second["status"] == "clarification",
-    )
-    print()
+        print("Краткосрочная память")
+        print("  Первый запрос:", first["status"])
+        print("  Второй запрос той же сессии:", second["status"])
+        print("  Состояние:", memory)
 
-    print("=" * 70)
-    print("3. ДОЛГОСРОЧНАЯ ПАМЯТЬ (SQLite)")
-    print("=" * 70)
+        assert first["status"] == "ok", first
+        assert second["status"] == "ok", second
+        assert memory == {
+            "genres": ["фантастика"],
+            "exclude_genres": ["ужасы"],
+        }, memory
 
-    user_id = "memory_check_user"
-    app.save_profile(user_id, ["фантастика", "комедия"])
-    print("после save_profile:", app.load_profile(user_id))
+        assert app.SESSION_MEMORY.clear(SESSION_ID) is True
+        assert app.SESSION_MEMORY.get(SESSION_ID) == {
+            "genres": [],
+            "exclude_genres": [],
+        }
+        print("  Очистка краткосрочной памяти: OK")
 
-    app.save_profile(user_id, ["драма"])
-    print("после повторного save_profile:", app.load_profile(user_id))
-    print("  -> строка перезаписывается, дубля нет (ON CONFLICT DO UPDATE)")
+        print("\nДолгосрочный профиль SQLite")
+        app.save_profile(USER_ID, ["фантастика", "комедия"])
+        first_profile = app.load_profile(USER_ID)
 
-    rows = [row for row in dump_table() if row[0] == user_id]
-    print("строка в таблице:", rows)
-    print()
+        app.save_profile(USER_ID, ["драма"])
+        updated_profile = app.load_profile(USER_ID)
 
-    print("Файл базы:", app.DB_PATH)
-    with sqlite3.connect(app.DB_PATH) as db:
-        schema = db.execute(
-            "SELECT sql FROM sqlite_master WHERE name='profiles'"
-        ).fetchone()
-    print("схема:", schema[0] if schema else "нет таблицы")
-    print()
+        print("  После первой записи:", first_profile)
+        print("  После обновления:", updated_profile)
 
-    print("=" * 70)
-    print("4. АКТУАЛЬНОСТЬ И УДАЛЕНИЕ")
-    print("=" * 70)
+        assert first_profile == ["фантастика", "комедия"]
+        assert updated_profile == ["драма"]
 
-    print("Обновление: каждое save_profile перезаписывает жанры и updated_at.")
-    print("Удаление в коде:", end=" ")
+        assert app.delete_profile(USER_ID) is True
+        assert app.load_profile(USER_ID) is None
+        print("  Удаление профиля: OK")
 
-    if hasattr(app, "delete_profile"):
-        print("есть app.delete_profile")
-    else:
-        print("ФУНКЦИИ НЕТ — ни в app.py, ни в agent_tools.TOOLS")
-        print("  Значит удалить профиль можно только прямым SQL.")
+        print("\nВсе проверки памяти пройдены.")
 
-        with sqlite3.connect(app.DB_PATH) as db:
-            db.execute("DELETE FROM profiles WHERE user_id = ?", (user_id,))
-            db.commit()
-
-        print("  Проверено вручную:")
-        print("    DELETE FROM profiles WHERE user_id = ?;")
-        print("  после удаления load_profile ->", app.load_profile(user_id))
-
-    print()
-
-    print("=" * 70)
-    print("5. ЧТО ВООБЩЕ ЛЕЖИТ В БАЗЕ")
-    print("=" * 70)
-
-    all_rows = dump_table()
-    print(f"всего профилей: {len(all_rows)}")
-    for row in all_rows[:10]:
-        print("  ", row)
-    print()
-    print("Персональных данных, кроме выбранных жанров, база не хранит:")
-    print("  колонки — user_id, genres, updated_at.")
+    finally:
+        app.SESSION_MEMORY.clear(SESSION_ID)
+        app.delete_profile(USER_ID)
 
 
 if __name__ == "__main__":

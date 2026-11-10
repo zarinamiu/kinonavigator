@@ -20,16 +20,32 @@ from pathlib import Path
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/chat")
 TAGS_URL = OLLAMA_URL.replace("/api/chat", "/api/tags")
 RUNS_PATH = Path(__file__).resolve().parent.parent / "report" / "llm_runs.json"
-ATTEMPTS = 2
+ATTEMPTS = 3
 NUM_CTX = 1024
 
 USER_REQUEST = "Посоветуй лёгкую фантастику, но без ужасов"
 
-PROMPT = (
-    "Разбери запрос: «Посоветуй лёгкую фантастику, но без ужасов».\n"
-    "Верни только JSON с ключами genres, exclude_genres и need_clarification.\n"
-    "Не придумывай названия фильмов."
-)
+PROMPT = """
+Разбери запрос пользователя:
+«Посоветуй лёгкую фантастику, но без ужасов».
+
+Верни только один JSON-объект с тремя полями:
+- genres: список предпочитаемых жанров;
+- exclude_genres: список жанров, которых нужно избегать;
+- need_clarification: true или false.
+
+Для genres и exclude_genres разрешены только эти названия:
+фантастика, комедия, драма, ужасы, триллер,
+приключения, романтика, детектив, боевик.
+
+Правила:
+- укажи только жанры, которые прямо следуют из запроса;
+- фраза «без ужасов» означает, что «ужасы» должны быть в exclude_genres;
+- слово «лёгкая» описывает настроение, это не название жанра;
+- не добавляй жанр, если пользователь его не называл;
+- не придумывай названия фильмов и не добавляй другие поля;
+- need_clarification должен быть настоящим JSON boolean: true или false, не строкой.
+""".strip()
 
 EXPECTED_GENRES = {"фантастика"}
 EXPECTED_EXCLUDED = {"ужасы"}
@@ -96,47 +112,94 @@ def _normalize(value) -> str | None:
 
 
 def assess(content: str) -> dict:
-    """Проверяет ответ по тем же критериям, что и в таблице отчёта."""
+    """Строго проверяет JSON-ответ модели на тестовом запросе."""
     try:
         parsed = json.loads(content)
         json_valid = isinstance(parsed, dict)
     except json.JSONDecodeError:
-        parsed, json_valid = {}, False
+        parsed = {}
+        json_valid = False
 
     if not json_valid:
         parsed = {}
 
-    raw_genres = parsed.get("genres") if isinstance(parsed.get("genres"), list) else []
-    raw_excluded = (
-        parsed.get("exclude_genres")
-        if isinstance(parsed.get("exclude_genres"), list)
-        else []
+    raw_genres = parsed.get("genres")
+    raw_excluded = parsed.get("exclude_genres")
+    clarification = parsed.get("need_clarification")
+
+    genres_are_lists = isinstance(raw_genres, list)
+    excluded_are_lists = isinstance(raw_excluded, list)
+
+    if not genres_are_lists:
+        raw_genres = []
+    if not excluded_are_lists:
+        raw_excluded = []
+
+    genres = [value for value in (_normalize(x) for x in raw_genres) if value]
+    excluded = [value for value in (_normalize(x) for x in raw_excluded) if value]
+
+    unknown_values = []
+    for value in raw_genres + raw_excluded:
+        normalized = _normalize(value)
+        if normalized is None:
+            unknown_values.append(repr(value))
+
+    expected_keys = {"genres", "exclude_genres", "need_clarification"}
+    actual_keys = set(parsed)
+    extra_fields = sorted(actual_keys - expected_keys)
+    missing_fields = sorted(expected_keys - actual_keys)
+
+    genre_ok = (
+        genres_are_lists
+        and len(genres) == 1
+        and set(genres) == EXPECTED_GENRES
     )
 
-    genres = [g for g in (_normalize(x) for x in raw_genres) if g]
-    excluded = [g for g in (_normalize(x) for x in raw_excluded) if g]
+    exclusion_ok = (
+        excluded_are_lists
+        and len(excluded) == 1
+        and set(excluded) == EXPECTED_EXCLUDED
+    )
 
-    raw_normalized = {
-        (str(x).strip().casefold().replace("ё", "е") if isinstance(x, str) else str(x))
-        for x in raw_genres + raw_excluded
-    }
+    clarification_ok = type(clarification) is bool and clarification is False
 
-    keys = set(parsed)
-    extra_fields = sorted(keys - {"genres", "exclude_genres", "need_clarification"})
+    schema_ok = (
+        json_valid
+        and actual_keys == expected_keys
+        and genres_are_lists
+        and excluded_are_lists
+        and type(clarification) is bool
+    )
+
+    title_like_fields = ("title", "movie", "film")
+    invented_titles = any(
+        any(token in field.casefold() for token in title_like_fields)
+        for field in extra_fields
+    )
+
+    passed = (
+        schema_ok
+        and genre_ok
+        and exclusion_ok
+        and clarification_ok
+        and not unknown_values
+        and not invented_titles
+    )
 
     return {
         "json_valid": json_valid,
+        "schema_ok": schema_ok,
         "genres": genres,
         "exclude_genres": excluded,
-        "need_clarification": parsed.get("need_clarification"),
-        "genre_ok": EXPECTED_GENRES.issubset(set(genres)),
-        "exclusion_ok": EXPECTED_EXCLUDED.issubset(set(excluded)),
-        "unknown_genres": sorted(
-            g for g in raw_normalized
-            if g not in ALLOWED_GENRES and g not in ALIASES
-        ),
+        "need_clarification": clarification,
+        "genre_ok": genre_ok,
+        "exclusion_ok": exclusion_ok,
+        "clarification_ok": clarification_ok,
+        "unknown_genres": unknown_values,
         "extra_fields": extra_fields,
-        "invented_titles": bool(TITLE_PATTERN.search(content)),
+        "missing_fields": missing_fields,
+        "invented_titles": invented_titles,
+        "passed": passed,
     }
 
 
