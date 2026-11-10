@@ -1,0 +1,10 @@
+### ТЕСТ 1: основная модель недоступна → резервная tinyllama:1.1b
+{
+  "genres": [],
+  "exclude_genres": [],
+  "need_clarification": true,
+  "source_model": "tinyllama:1.1b",
+  "fallback_chain": [
+    "несуществующая:1b: HTTP Error 400: Bad Request"
+  ]
+}

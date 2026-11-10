@@ -1,0 +1,3 @@
+$ python framework_smoke.py
+{'text': 'фантастика без ужасов', 'steps': ['parse', 'recommend', 'validate']}
+exit=0

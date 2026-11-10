@@ -1,60 +1,28 @@
-{"time": 1794236495.4538171, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794236495.454305, "step": "finish", "duration_ms": 0.49, "recommendation_count": 5}
-{"time": 1794236495.454883, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794236495.4549649, "step": "finish", "duration_ms": 0.09, "recommendation_count": 5}
-{"time": 1794236495.45713, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794236495.457322, "step": "clarification"}
-{"time": 1794236511.9871418, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794236511.98898, "step": "finish", "duration_ms": 1.97, "recommendation_count": 5}
-{"time": 1794237120.75729, "step": "parse", "preferences": {"genres": ["фантастика", "ужасы"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794237120.757637, "step": "finish", "duration_ms": 0.36, "recommendation_count": 0}
-{"time": 1794237120.75777, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794237120.7578418, "step": "finish", "duration_ms": 0.08, "recommendation_count": 5}
-{"time": 1794237120.760345, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794237120.7605388, "step": "clarification"}
-{"time": 1794237474.0431511, "step": "parse", "preferences": {"genres": ["фантастика", "ужасы"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794237474.045419, "step": "finish", "duration_ms": 2.45, "recommendation_count": 0}
-{"time": 1794237495.165426, "step": "parse", "preferences": {"genres": ["фантастика", "ужасы"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794237495.167819, "step": "finish", "duration_ms": 2.4, "recommendation_count": 0}
-{"time": 1794237495.167964, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794237495.168022, "step": "finish", "duration_ms": 0.07, "recommendation_count": 5}
-{"time": 1794237495.169191, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794237495.169709, "step": "clarification"}
-{"time": 1794237513.295038, "step": "parse", "preferences": {"genres": ["фантастика", "ужасы"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794237513.296139, "step": "finish", "duration_ms": 1.22, "recommendation_count": 0}
-{"time": 1794237821.255525, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794237821.255836, "step": "no_results", "genres": ["фантастика"], "excluded_genres": ["ужасы"]}
-{"time": 1794237821.256255, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794237821.256313, "step": "finish", "duration_ms": 0.07, "recommendation_count": 5}
-{"time": 1794237821.257333, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794237821.257456, "step": "clarification"}
-{"time": 1794237831.1193259, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794237831.119494, "step": "no_results", "genres": ["фантастика"], "excluded_genres": ["ужасы"]}
-{"time": 1794237831.119961, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794237831.1200352, "step": "finish", "duration_ms": 0.08, "recommendation_count": 5}
-{"time": 1794237831.1213021, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794237831.121542, "step": "clarification"}
-{"time": 1794237845.948113, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794237845.949698, "step": "finish", "duration_ms": 1.74, "recommendation_count": 5}
-{"time": 1794238231.3700118, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794238231.370325, "step": "finish", "duration_ms": 0.32, "recommendation_count": 5}
-{"time": 1794238231.370872, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794238231.3709471, "step": "finish", "duration_ms": 0.08, "recommendation_count": 5}
-{"time": 1794238231.37393, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794238231.37423, "step": "clarification"}
-{"time": 1794239224.796454, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794239224.796853, "step": "finish", "duration_ms": 0.41, "recommendation_count": 5}
-{"time": 1794239224.797004, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794239224.7970629, "step": "finish", "duration_ms": 0.07, "recommendation_count": 5}
-{"time": 1794239224.798644, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794239224.798764, "step": "clarification"}
-{"time": 1794239271.2175832, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794239271.219276, "step": "finish", "duration_ms": 1.79, "recommendation_count": 5}
-{"time": 1794240014.471322, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794240014.471681, "step": "finish", "duration_ms": 0.37, "recommendation_count": 5}
-{"time": 1794240014.4718149, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
-{"time": 1794240014.471872, "step": "finish", "duration_ms": 0.07, "recommendation_count": 5}
-{"time": 1794240014.4730282, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
-{"time": 1794240014.473186, "step": "clarification"}
-{"time": 1794240024.416034, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
-{"time": 1794240024.417387, "step": "finish", "duration_ms": 1.46, "recommendation_count": 5}
+{"time": 1794271415.1354067, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271415.135619, "step": "finish", "duration_ms": 0.24, "recommendation_count": 5}
+{"time": 1794271681.4368334, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271681.4370098, "step": "finish", "duration_ms": 0.21, "recommendation_count": 5}
+{"time": 1794271681.4371202, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
+{"time": 1794271681.438164, "step": "clarification"}
+{"time": 1794271681.4399729, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
+{"time": 1794271681.4402704, "step": "clarification"}
+{"time": 1794271979.2271862, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271979.2273803, "step": "finish", "duration_ms": 0.22, "recommendation_count": 5}
+{"time": 1794271979.2276587, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
+{"time": 1794271979.227738, "step": "finish", "duration_ms": 0.1, "recommendation_count": 5}
+{"time": 1794271979.2300029, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
+{"time": 1794271979.2303734, "step": "clarification"}
+{"time": 1794271979.2422986, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271979.2424502, "step": "finish", "duration_ms": 0.18, "recommendation_count": 5}
+{"time": 1794271979.2473958, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271979.2475882, "step": "finish", "duration_ms": 0.24, "recommendation_count": 5}
+{"time": 1794271997.5604198, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271997.5606022, "step": "finish", "duration_ms": 0.21, "recommendation_count": 5}
+{"time": 1794271997.5608768, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": [], "need_clarification": false}}
+{"time": 1794271997.5609577, "step": "finish", "duration_ms": 0.1, "recommendation_count": 5}
+{"time": 1794271997.5637321, "step": "parse", "preferences": {"genres": [], "exclude_genres": [], "need_clarification": true}}
+{"time": 1794271997.5640798, "step": "clarification"}
+{"time": 1794271997.5733764, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271997.5735137, "step": "finish", "duration_ms": 0.16, "recommendation_count": 5}
+{"time": 1794271997.5787249, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271997.5788586, "step": "finish", "duration_ms": 0.16, "recommendation_count": 5}

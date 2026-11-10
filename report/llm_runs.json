@@ -1,0 +1,168 @@
+[
+  {
+    "model": "tinyllama:1.1b",
+    "attempt": 1,
+    "ok": true,
+    "content": "{\"genres\": [\"Action\", \"Adventure\", \"Drama\", \"Romance\"], \"exclude_genres\": [\"Horror\", \"Thriller\"], \"need_clarification\": false}",
+    "seconds": 84.52,
+    "eval_count": 46,
+    "prompt_eval_count": 105,
+    "total_duration_s": 84.52,
+    "json_valid": true,
+    "genres": [
+      "боевик",
+      "приключения",
+      "драма",
+      "романтика"
+    ],
+    "exclude_genres": [
+      "ужасы",
+      "триллер"
+    ],
+    "need_clarification": false,
+    "genre_ok": false,
+    "exclusion_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "invented_titles": true,
+    "tokens_per_second": 0.54
+  },
+  {
+    "model": "tinyllama:1.1b",
+    "attempt": 2,
+    "ok": true,
+    "content": "{\"genres\": [\"Action\", \"Adventure\", \"Drama\", \"Romance\"], \"exclude_genres\": [\"Horror\", \"Thriller\"], \"need_clarification\": false}",
+    "seconds": 4.32,
+    "eval_count": 46,
+    "prompt_eval_count": 105,
+    "total_duration_s": 4.32,
+    "json_valid": true,
+    "genres": [
+      "боевик",
+      "приключения",
+      "драма",
+      "романтика"
+    ],
+    "exclude_genres": [
+      "ужасы",
+      "триллер"
+    ],
+    "need_clarification": false,
+    "genre_ok": false,
+    "exclusion_ok": true,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "invented_titles": true,
+    "tokens_per_second": 10.65
+  },
+  {
+    "model": "smollm2:360m",
+    "attempt": 1,
+    "ok": true,
+    "content": "{\n  \"genres\": [\"Action\", \"Comedy\", \"Drama\", \"Thriller\"],\n  \"exclude_genres\": [\"Action\", \"Comedy\", \"Thriller\"],\n  \"need_clarification\": false\n}",
+    "seconds": 43.04,
+    "eval_count": 53,
+    "prompt_eval_count": 141,
+    "total_duration_s": 43.03,
+    "json_valid": true,
+    "genres": [
+      "боевик",
+      "комедия",
+      "драма",
+      "триллер"
+    ],
+    "exclude_genres": [
+      "боевик",
+      "комедия",
+      "триллер"
+    ],
+    "need_clarification": false,
+    "genre_ok": false,
+    "exclusion_ok": false,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "invented_titles": true,
+    "tokens_per_second": 1.23
+  },
+  {
+    "model": "smollm2:360m",
+    "attempt": 2,
+    "ok": true,
+    "content": "{\n  \"genres\": [\"Action\", \"Comedy\", \"Drama\", \"Thriller\"],\n  \"exclude_genres\": [\"Action\", \"Comedy\", \"Thriller\"],\n  \"need_clarification\": false\n}",
+    "seconds": 3.9,
+    "eval_count": 53,
+    "prompt_eval_count": 141,
+    "total_duration_s": 3.89,
+    "json_valid": true,
+    "genres": [
+      "боевик",
+      "комедия",
+      "драма",
+      "триллер"
+    ],
+    "exclude_genres": [
+      "боевик",
+      "комедия",
+      "триллер"
+    ],
+    "need_clarification": false,
+    "genre_ok": false,
+    "exclusion_ok": false,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "invented_titles": true,
+    "tokens_per_second": 13.62
+  },
+  {
+    "model": "llama3.2:1b",
+    "attempt": 1,
+    "ok": false,
+    "error": "HTTPError: HTTP Error 500: Internal Server Error"
+  },
+  {
+    "model": "llama3.2:1b",
+    "attempt": 2,
+    "ok": false,
+    "error": "HTTPError: HTTP Error 500: Internal Server Error"
+  },
+  {
+    "model": "qwen2.5:0.5b",
+    "attempt": 1,
+    "ok": true,
+    "content": "{\n  \"genres\": [],\n  \"exclude_genres\": [],\n  \"need_clarification\": \"нет\"\n}",
+    "seconds": 4.01,
+    "eval_count": 25,
+    "prompt_eval_count": 90,
+    "total_duration_s": 4.01,
+    "json_valid": true,
+    "genres": [],
+    "exclude_genres": [],
+    "need_clarification": "нет",
+    "genre_ok": false,
+    "exclusion_ok": false,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "invented_titles": false,
+    "tokens_per_second": 6.23
+  },
+  {
+    "model": "qwen2.5:0.5b",
+    "attempt": 2,
+    "ok": true,
+    "content": "{\n  \"genres\": [],\n  \"exclude_genres\": [],\n  \"need_clarification\": \"нет\"\n}",
+    "seconds": 1.38,
+    "eval_count": 25,
+    "prompt_eval_count": 90,
+    "total_duration_s": 1.38,
+    "json_valid": true,
+    "genres": [],
+    "exclude_genres": [],
+    "need_clarification": "нет",
+    "genre_ok": false,
+    "exclusion_ok": false,
+    "unknown_genres": [],
+    "extra_fields": [],
+    "invented_titles": false,
+    "tokens_per_second": 18.12
+  }
+]

@@ -1,0 +1,159 @@
+{
+  "dataset": "MovieLens 100K",
+  "seed": 42,
+  "k": 10,
+  "split": "per-user, 20% of positives (>=4) held out",
+  "users_evaluated": 5,
+  "total_users_in_test": 942,
+  "seconds": 13.9,
+  "sample_note": "Метрики на маленькой выборке. Не сопоставимы с полным прогоном и с публикациями по MovieLens.",
+  "metrics": {
+    "popularity": {
+      "precision": 0.04,
+      "recall": 0.012903225806451613,
+      "ndcg": 0.03526002132068583
+    },
+    "content": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "ndcg": 0.0
+    },
+    "item_cf": {
+      "precision": 0.18,
+      "recall": 0.3160215053763441,
+      "ndcg": 0.3456730176755218
+    },
+    "hybrid": {
+      "precision": 0.18000000000000002,
+      "recall": 0.14935483870967742,
+      "ndcg": 0.2028004836253206
+    }
+  },
+  "per_user": [
+    {
+      "user_id": 196,
+      "seen_in_train": 35,
+      "held_out": 4,
+      "popularity": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "content": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "item_cf": {
+        "precision": 0.1,
+        "recall": 0.25,
+        "ndcg": 0.1391
+      },
+      "hybrid": {
+        "precision": 0.1,
+        "recall": 0.25,
+        "ndcg": 0.1952
+      }
+    },
+    {
+      "user_id": 186,
+      "seen_in_train": 82,
+      "held_out": 10,
+      "popularity": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "content": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "item_cf": {
+        "precision": 0.1,
+        "recall": 0.1,
+        "ndcg": 0.0948
+      },
+      "hybrid": {
+        "precision": 0.2,
+        "recall": 0.2,
+        "ndcg": 0.2173
+      }
+    },
+    {
+      "user_id": 22,
+      "seen_in_train": 113,
+      "held_out": 15,
+      "popularity": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "content": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "item_cf": {
+        "precision": 0.2,
+        "recall": 0.1333,
+        "ndcg": 0.2985
+      },
+      "hybrid": {
+        "precision": 0.3,
+        "recall": 0.2,
+        "ndcg": 0.3621
+      }
+    },
+    {
+      "user_id": 244,
+      "seen_in_train": 207,
+      "held_out": 31,
+      "popularity": {
+        "precision": 0.2,
+        "recall": 0.0645,
+        "ndcg": 0.1763
+      },
+      "content": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "item_cf": {
+        "precision": 0.3,
+        "recall": 0.0968,
+        "ndcg": 0.3785
+      },
+      "hybrid": {
+        "precision": 0.3,
+        "recall": 0.0968,
+        "ndcg": 0.2394
+      }
+    },
+    {
+      "user_id": 166,
+      "seen_in_train": 18,
+      "held_out": 2,
+      "popularity": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "content": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      },
+      "item_cf": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "ndcg": 0.8175
+      },
+      "hybrid": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "ndcg": 0.0
+      }
+    }
+  ]
+}

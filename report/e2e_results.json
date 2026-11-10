@@ -1,0 +1,52 @@
+[
+  {
+    "scenario": "«Посоветуй фантастику без ужасов»",
+    "passed": true,
+    "detail": "5 фильмов, ужасов нет: Звёздный маршрут, Тихий космос, Планета друзей, Команда исследователей, Космическая шутка"
+  },
+  {
+    "scenario": "Запрос без жанра",
+    "passed": true,
+    "detail": "уточнение: Уточните, пожалуйста, жанр или настроение."
+  },
+  {
+    "scenario": "Новый пользователь",
+    "passed": true,
+    "detail": "профиль нового пуст, чужой профиль (['ужасы']) не подхвачен, ответ — clarification"
+  },
+  {
+    "scenario": "Несуществующий ID фильма",
+    "passed": true,
+    "detail": "валидатор оставил только [1], инструмент вернул None"
+  },
+  {
+    "scenario": "Неизвестный tool",
+    "passed": true,
+    "detail": "запрещены все 4 имени: run_shell_command, read_file, eval, execute_code"
+  },
+  {
+    "scenario": "Модель недоступна",
+    "passed": true,
+    "detail": "цепочка отказов: 2, итог — локальный разбор, жанры ['фантастика']"
+  },
+  {
+    "scenario": "Некорректный JSON модели",
+    "passed": true,
+    "detail": "битый JSON пойман, откат на локальный разбор; ошибка записана: битая:1b: Expecting property name enclosed in double quotes:"
+  },
+  {
+    "scenario": "Ошибка инструментов",
+    "passed": true,
+    "detail": "мусор отфильтрован (осталось [1, 2, 1]), неверный тип аргумента — ValueError: movie_id должен быть целым числом"
+  },
+  {
+    "scenario": "Запуск в VM",
+    "passed": false,
+    "detail": "НЕ ВЫПОЛНЕНО: /dev/kvm отсутствует, гипервизор недоступен. Приложение проверено локально в .venv — это не VM."
+  },
+  {
+    "scenario": "MovieLens",
+    "passed": true,
+    "detail": "seed=42, K=10, пользователей=5, split=per-user, 20% of positives (>=4) held out"
+  }
+]

@@ -1,0 +1,28 @@
+$ python tools/llm_bench.py
+Доступные модели: tinyllama:1.1b, smollm2:360m, llama3.2:1b, qwen2.5:0.5b
+Запрос: Посоветуй лёгкую фантастику, но без ужасов
+num_ctx=1024, temperature=0, seed=42, попыток на модель: 2
+
+tinyllama:1.1b попытка 1: 84.52 c, JSON=True, жанр=False, запрет=True, ток/с=0.54
+  ответ: '{"genres": ["Action", "Adventure", "Drama", "Romance"], "exclude_genres": ["Horror", "Thriller"], "need_clarification": false}'
+
+tinyllama:1.1b попытка 2: 4.32 c, JSON=True, жанр=False, запрет=True, ток/с=10.65
+  ответ: '{"genres": ["Action", "Adventure", "Drama", "Romance"], "exclude_genres": ["Horror", "Thriller"], "need_clarification": false}'
+
+smollm2:360m попытка 1: 43.04 c, JSON=True, жанр=False, запрет=False, ток/с=1.23
+  ответ: '{\n  "genres": ["Action", "Comedy", "Drama", "Thriller"],\n  "exclude_genres": ["Action", "Comedy", "Thriller"],\n  "need_clarification": false\n}'
+
+smollm2:360m попытка 2: 3.9 c, JSON=True, жанр=False, запрет=False, ток/с=13.62
+  ответ: '{\n  "genres": ["Action", "Comedy", "Drama", "Thriller"],\n  "exclude_genres": ["Action", "Comedy", "Thriller"],\n  "need_clarification": false\n}'
+
+llama3.2:1b попытка 1: ОШИБКА — HTTP Error 500: Internal Server Error
+
+llama3.2:1b попытка 2: ОШИБКА — HTTP Error 500: Internal Server Error
+
+qwen2.5:0.5b попытка 1: 4.01 c, JSON=True, жанр=False, запрет=False, ток/с=6.23
+  ответ: '{\n  "genres": [],\n  "exclude_genres": [],\n  "need_clarification": "нет"\n}'
+
+qwen2.5:0.5b попытка 2: 1.38 c, JSON=True, жанр=False, запрет=False, ток/с=18.12
+  ответ: '{\n  "genres": [],\n  "exclude_genres": [],\n  "need_clarification": "нет"\n}'
+
+Сохранено: /home/user/mila/kinonavigator/report/llm_runs.json (8 записей)

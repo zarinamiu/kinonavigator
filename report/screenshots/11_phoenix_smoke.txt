@@ -1,0 +1,3 @@
+$ python phoenix_smoke.py
+Тестовая трасса отправлена
+exit=0

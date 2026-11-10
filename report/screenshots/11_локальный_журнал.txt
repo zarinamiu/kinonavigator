@@ -1,0 +1,2 @@
+{"time": 1794271415.1354067, "step": "parse", "preferences": {"genres": ["фантастика"], "exclude_genres": ["ужасы"], "need_clarification": false}}
+{"time": 1794271415.135619, "step": "finish", "duration_ms": 0.24, "recommendation_count": 5}

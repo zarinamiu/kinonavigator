@@ -1,0 +1,30 @@
+### ТЕСТ 2: обе модели недоступны → локальный разбор
+{
+  "genres": [
+    "фантастика"
+  ],
+  "exclude_genres": [
+    "ужасы"
+  ],
+  "need_clarification": false,
+  "source_model": "local_fallback",
+  "fallback_chain": [
+    "down:1b: HTTP Error 404: Not Found",
+    "down2:1b: HTTP Error 404: Not Found"
+  ]
+}
+
+### ТЕСТ 3: переменные не заданы → локальный разбор
+{
+  "genres": [
+    "фантастика"
+  ],
+  "exclude_genres": [
+    "ужасы"
+  ],
+  "need_clarification": false,
+  "source_model": "local_fallback",
+  "fallback_chain": [
+    "переменные OLLAMA_MODEL и OLLAMA_BACKUP_MODEL не заданы"
+  ]
+}

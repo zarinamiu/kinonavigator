@@ -1,0 +1,26 @@
+$ python diagrams/build_diagrams.py
+Строю схемы в /home/user/mila/kinonavigator/diagrams
+   01_system_context
+   02_container
+   03_components_agents
+   04_components_recsys
+   05_data_model
+   06_deployment
+   07_sequence
+
+Всего файлов: 15
+  01_system_context.png                131.7 KB
+  01_system_context.svg                 86.7 KB
+  02_container.png                     127.8 KB
+  02_container.svg                      86.7 KB
+  03_components_agents.png             128.7 KB
+  03_components_agents.svg              90.5 KB
+  04_components_recsys.png             142.4 KB
+  04_components_recsys.svg              78.2 KB
+  05_data_model.png                    133.0 KB
+  05_data_model.svg                    108.0 KB
+  06_deployment.png                    144.9 KB
+  06_deployment.svg                    106.9 KB
+  07_sequence.png                      153.9 KB
+  07_sequence.svg                      116.0 KB
+  build_diagrams.py                     19.2 KB

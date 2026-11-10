@@ -1,0 +1,11 @@
+$ curl GraphQL project traceCount
+{"data":{"node":{"name":"default","traceCount":1}}}
+
+$ curl GraphQL spans
+{"data":{"projects":{"edges":[{"node":{"name":"default","spans":{"edges":[{"node":{"name":"manual-smoke-test","spanKind":"unknown","statusCode":"UNSET"}}]}}}]}}}
+
+=== ВЕРСИИ ПАКЕТОВ ===
+arize-phoenix==21.0.0
+opentelemetry-sdk==1.45.2
+opentelemetry-exporter-otlp-proto-http==1.45.2
+opentelemetry-api==1.45.2

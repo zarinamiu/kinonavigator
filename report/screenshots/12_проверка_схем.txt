@@ -1,0 +1,8 @@
+$ python report/check_diagrams.py
+/home/user/mila/kinonavigator/report/check_diagrams.py:51: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  colors = len(set(small.getdata()))
+Проверка схем: /home/user/mila/kinonavigator/diagrams
+Проверка графиков: /home/user/mila/kinonavigator/report/figures
+
+Все 12 изображений на месте: PNG и SVG, размеры в норме.
+exit=0
